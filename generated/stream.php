@@ -8,14 +8,12 @@ use Safe\Exceptions\StreamException;
  * Sets parameters on the specified context.
  *
  * @param resource $context The stream or context to apply the parameters too.
- * @param array $params An array of parameters to set.
- *
- * params should be an associative array of the structure:
+ * @param array $params An associative array of parameters to be set in the following format:
  * $params['paramname'] = "paramvalue";.
  * @throws StreamException
  *
  */
-function stream_context_set_params($context, array $params): void
+function stream_context_set_params( $context, array $params): void
 {
     error_clear_last();
     $result = \stream_context_set_params($context, $params);
@@ -26,25 +24,31 @@ function stream_context_set_params($context, array $params): void
 
 
 /**
- * Makes a copy of up to maxlength bytes
+ * Makes a copy of up to length bytes
  * of data from the current position (or from the
  * offset position, if specified) in
- * source to dest. If
- * maxlength is not specified, all remaining content in
- * source will be copied.
+ * from to to. If
+ * length is NULL, all remaining content in
+ * from will be copied.
  *
- * @param resource $source The source stream
- * @param resource $dest The destination stream
- * @param int $maxlength Maximum bytes to copy
+ * @param resource $from The source stream
+ * @param resource $to The destination stream
+ * @param int $length Maximum bytes to copy. By default all bytes left are copied.
  * @param int $offset The offset where to start to copy data
  * @return int Returns the total count of bytes copied.
  * @throws StreamException
  *
  */
-function stream_copy_to_stream($source, $dest, int $maxlength = -1, int $offset = 0): int
+function stream_copy_to_stream( $from,  $to, int $length = null, int $offset = 0): int
 {
     error_clear_last();
-    $result = \stream_copy_to_stream($source, $dest, $maxlength, $offset);
+    if ($offset !== 0) {
+        $result = \stream_copy_to_stream($from, $to, $length, $offset);
+    } elseif ($length !== null) {
+        $result = \stream_copy_to_stream($from, $to, $length);
+    }else {
+        $result = \stream_copy_to_stream($from, $to);
+    }
     if ($result === false) {
         throw StreamException::createFromPhpError();
     }
@@ -83,14 +87,14 @@ function stream_copy_to_stream($source, $dest, int $maxlength = -1, int $offset 
  * @throws StreamException
  *
  */
-function stream_filter_append($stream, string $filtername, int $read_write = null, array $params = null)
+function stream_filter_append( $stream, string $filtername, int $read_write = null, array $params = null)
 {
     error_clear_last();
     if ($params !== null) {
         $result = \stream_filter_append($stream, $filtername, $read_write, $params);
     } elseif ($read_write !== null) {
         $result = \stream_filter_append($stream, $filtername, $read_write);
-    } else {
+    }else {
         $result = \stream_filter_append($stream, $filtername);
     }
     if ($result === false) {
@@ -132,14 +136,14 @@ function stream_filter_append($stream, string $filtername, int $read_write = nul
  * @throws StreamException
  *
  */
-function stream_filter_prepend($stream, string $filtername, int $read_write = null, array $params = null)
+function stream_filter_prepend( $stream, string $filtername, int $read_write = null, array $params = null)
 {
     error_clear_last();
     if ($params !== null) {
         $result = \stream_filter_prepend($stream, $filtername, $read_write, $params);
     } elseif ($read_write !== null) {
         $result = \stream_filter_prepend($stream, $filtername, $read_write);
-    } else {
+    }else {
         $result = \stream_filter_prepend($stream, $filtername);
     }
     if ($result === false) {
@@ -188,7 +192,7 @@ function stream_filter_register(string $filter_name, string $class): void
  * @throws StreamException
  *
  */
-function stream_filter_remove($stream_filter): void
+function stream_filter_remove( $stream_filter): void
 {
     error_clear_last();
     $result = \stream_filter_remove($stream_filter);
@@ -202,11 +206,11 @@ function stream_filter_remove($stream_filter): void
  * Identical to file_get_contents, except that
  * stream_get_contents operates on an already open
  * stream resource and returns the remaining contents in a string, up to
- * maxlength bytes and starting at the specified
+ * length bytes and starting at the specified
  * offset.
  *
- * @param resource $handle A stream resource (e.g. returned from fopen)
- * @param int $maxlength The maximum bytes to read. Defaults to -1 (read all the remaining
+ * @param resource $stream A stream resource (e.g. returned from fopen)
+ * @param int $length The maximum bytes to read. Defaults to NULL (read all the remaining
  * buffer).
  * @param int $offset Seek to the specified offset before reading. If this number is negative,
  * no seeking will occur and reading will start from the current position.
@@ -214,10 +218,50 @@ function stream_filter_remove($stream_filter): void
  * @throws StreamException
  *
  */
-function stream_get_contents($handle, int $maxlength = -1, int $offset = -1): string
+function stream_get_contents( $stream, int $length = null, int $offset = -1): string
 {
     error_clear_last();
-    $result = \stream_get_contents($handle, $maxlength, $offset);
+    if ($offset !== -1) {
+        $result = \stream_get_contents($stream, $length, $offset);
+    } elseif ($length !== null) {
+        $result = \stream_get_contents($stream, $length);
+    }else {
+        $result = \stream_get_contents($stream);
+    }
+    if ($result === false) {
+        throw StreamException::createFromPhpError();
+    }
+    return $result;
+}
+
+
+/**
+ * Gets a line from the given handle.
+ *
+ * Reading ends when length bytes have been read, when
+ * the non-empty string specified by ending is found (which is
+ * not included in the return value), or on EOF
+ * (whichever comes first).
+ *
+ * This function is nearly identical to fgets except in
+ * that it allows end of line delimiters other than the standard \n, \r, and
+ * \r\n, and does not return the delimiter itself.
+ *
+ * @param resource $stream A valid file handle.
+ * @param int $length The maximum number of bytes to read from the handle.
+ * Negative values are not supported.
+ * Zero (0) means the default socket chunk size,
+ * i.e. 8192 bytes.
+ * @param string $ending An optional string delimiter.
+ * @return string Returns a string of up to length bytes read from the file
+ * pointed to by stream.
+ * @throws StreamException
+ *
+ */
+function stream_get_line( $stream, int $length, string $ending = ""): string
+{
+    error_clear_last();
+    $result = \stream_get_line($stream, $length, $ending);
     if ($result === false) {
         throw StreamException::createFromPhpError();
     }
@@ -233,7 +277,7 @@ function stream_get_contents($handle, int $maxlength = -1, int $offset = -1): st
  * @throws StreamException
  *
  */
-function stream_isatty($stream): void
+function stream_isatty( $stream): void
 {
     error_clear_last();
     $result = \stream_isatty($stream);
@@ -280,7 +324,7 @@ function stream_resolve_include_path(string $filename): string
  * @throws StreamException
  *
  */
-function stream_set_blocking($stream, bool $enable): void
+function stream_set_blocking( $stream, bool $enable): void
 {
     error_clear_last();
     $result = \stream_set_blocking($stream, $enable);
@@ -305,7 +349,7 @@ function stream_set_blocking($stream, bool $enable): void
  * @throws StreamException
  *
  */
-function stream_set_timeout($stream, int $seconds, int $microseconds = 0): void
+function stream_set_timeout( $stream, int $seconds, int $microseconds = 0): void
 {
     error_clear_last();
     $result = \stream_set_timeout($stream, $seconds, $microseconds);
@@ -319,10 +363,11 @@ function stream_set_timeout($stream, int $seconds, int $microseconds = 0): void
  * Accept a connection on a socket previously created by
  * stream_socket_server.
  *
- * @param resource $server_socket The server socket to accept a connection from.
+ * @param resource $socket The server socket to accept a connection from.
  * @param float $timeout Override the default socket accept timeout. Time should be given in
- * seconds.
- * @param string|null $peername Will be set to the name (address) of the client which connected, if
+ * seconds. By default, default_socket_timeout
+ * is used.
+ * @param string|null $peer_name Will be set to the name (address) of the client which connected, if
  * included and available from the selected transport.
  *
  * Can also be determined later using
@@ -331,15 +376,15 @@ function stream_set_timeout($stream, int $seconds, int $microseconds = 0): void
  * @throws StreamException
  *
  */
-function stream_socket_accept($server_socket, float $timeout = null, ?string &$peername = null)
+function stream_socket_accept( $socket, float $timeout = null, ?string &$peer_name = null)
 {
     error_clear_last();
-    if ($peername !== null) {
-        $result = \stream_socket_accept($server_socket, $timeout, $peername);
+    if ($peer_name !== null) {
+        $result = \stream_socket_accept($socket, $timeout, $peer_name);
     } elseif ($timeout !== null) {
-        $result = \stream_socket_accept($server_socket, $timeout);
-    } else {
-        $result = \stream_socket_accept($server_socket);
+        $result = \stream_socket_accept($socket, $timeout);
+    }else {
+        $result = \stream_socket_accept($socket);
     }
     if ($result === false) {
         throw StreamException::createFromPhpError();
@@ -350,20 +395,21 @@ function stream_socket_accept($server_socket, float $timeout = null, ?string &$p
 
 /**
  * Initiates a stream or datagram connection to the destination specified
- * by remote_socket.  The type of socket created
+ * by address.  The type of socket created
  * is determined by the transport specified using standard URL formatting:
  * transport://target.  For Internet Domain sockets
  * (AF_INET) such as TCP and UDP, the target portion
- * of the remote_socket parameter should consist of
+ * of the address parameter should consist of
  * a hostname or IP address followed by a colon and a port number.  For Unix
  * domain sockets, the target portion should point
  * to the socket file on the filesystem.
  *
- * @param string $remote_socket Address to the socket to connect to.
- * @param int|null $errno Will be set to the system level error number if connection fails.
- * @param string|null $errstr Will be set to the system level error message if the connection fails.
+ * @param string $address Address to the socket to connect to.
+ * @param int|null $error_code Will be set to the system level error number if connection fails.
+ * @param string|null $error_message Will be set to the system level error message if the connection fails.
  * @param float $timeout Number of seconds until the connect() system call
- * should timeout.
+ * should timeout. By default, default_socket_timeout
+ * is used.
  *
  *
  * This parameter only applies when not making asynchronous
@@ -397,17 +443,17 @@ function stream_socket_accept($server_socket, float $timeout = null, ?string &$p
  * @throws StreamException
  *
  */
-function stream_socket_client(string $remote_socket, ?int &$errno = null, ?string &$errstr = null, float $timeout = null, int $flags = STREAM_CLIENT_CONNECT, $context = null)
+function stream_socket_client(string $address, ?int &$error_code = null, ?string &$error_message = null, float $timeout = null, int $flags = STREAM_CLIENT_CONNECT,  $context = null)
 {
     error_clear_last();
     if ($context !== null) {
-        $result = \stream_socket_client($remote_socket, $errno, $errstr, $timeout, $flags, $context);
+        $result = \stream_socket_client($address, $error_code, $error_message, $timeout, $flags, $context);
     } elseif ($flags !== STREAM_CLIENT_CONNECT) {
-        $result = \stream_socket_client($remote_socket, $errno, $errstr, $timeout, $flags);
+        $result = \stream_socket_client($address, $error_code, $error_message, $timeout, $flags);
     } elseif ($timeout !== null) {
-        $result = \stream_socket_client($remote_socket, $errno, $errstr, $timeout);
-    } else {
-        $result = \stream_socket_client($remote_socket, $errno, $errstr);
+        $result = \stream_socket_client($address, $error_code, $error_message, $timeout);
+    }else {
+        $result = \stream_socket_client($address, $error_code, $error_message);
     }
     if ($result === false) {
         throw StreamException::createFromPhpError();
@@ -492,12 +538,12 @@ function stream_socket_pair(int $domain, int $type, int $protocol): iterable
  * @throws StreamException
  *
  */
-function stream_socket_server(string $local_socket, ?int &$errno = null, ?string &$errstr = null, int $flags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN, $context = null)
+function stream_socket_server(string $local_socket, ?int &$errno = null, ?string &$errstr = null, int $flags = STREAM_SERVER_BIND | STREAM_SERVER_LISTEN,  $context = null)
 {
     error_clear_last();
     if ($context !== null) {
         $result = \stream_socket_server($local_socket, $errno, $errstr, $flags, $context);
-    } else {
+    }else {
         $result = \stream_socket_server($local_socket, $errno, $errstr, $flags);
     }
     if ($result === false) {
@@ -520,7 +566,7 @@ function stream_socket_server(string $local_socket, ?int &$errno = null, ?string
  * @throws StreamException
  *
  */
-function stream_socket_shutdown($stream, int $mode): void
+function stream_socket_shutdown( $stream, int $mode): void
 {
     error_clear_last();
     $result = \stream_socket_shutdown($stream, $mode);
@@ -538,7 +584,7 @@ function stream_socket_shutdown($stream, int $mode): void
  * @throws StreamException
  *
  */
-function stream_supports_lock($stream): void
+function stream_supports_lock( $stream): void
 {
     error_clear_last();
     $result = \stream_supports_lock($stream);
@@ -608,3 +654,4 @@ function stream_wrapper_unregister(string $protocol): void
         throw StreamException::createFromPhpError();
     }
 }
+

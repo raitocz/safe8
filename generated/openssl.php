@@ -35,14 +35,14 @@ function openssl_cipher_iv_length(string $cipher_algo): int
  * @throws OpensslException
  *
  */
-function openssl_cms_decrypt(string $input_filename, string $output_filename, $certificate, $private_key = null, int $encoding = OPENSSL_ENCODING_SMIME): void
+function openssl_cms_decrypt(string $input_filename, string $output_filename,  $certificate,  $private_key = null, int $encoding = OPENSSL_ENCODING_SMIME): void
 {
     error_clear_last();
     if ($encoding !== OPENSSL_ENCODING_SMIME) {
         $result = \openssl_cms_decrypt($input_filename, $output_filename, $certificate, $private_key, $encoding);
     } elseif ($private_key !== null) {
         $result = \openssl_cms_decrypt($input_filename, $output_filename, $certificate, $private_key);
-    } else {
+    }else {
         $result = \openssl_cms_decrypt($input_filename, $output_filename, $certificate);
     }
     if ($result === false) {
@@ -66,7 +66,7 @@ function openssl_cms_decrypt(string $input_filename, string $output_filename, $c
  * @throws OpensslException
  *
  */
-function openssl_cms_encrypt(string $input_filename, string $output_filename, $certificate, $headers, int $flags = 0, int $encoding = OPENSSL_ENCODING_SMIME, int $cipher_algo = OPENSSL_CIPHER_RC2_40): void
+function openssl_cms_encrypt(string $input_filename, string $output_filename,  $certificate,  $headers, int $flags = 0, int $encoding = OPENSSL_ENCODING_SMIME, int $cipher_algo = OPENSSL_CIPHER_RC2_40): void
 {
     error_clear_last();
     $result = \openssl_cms_encrypt($input_filename, $output_filename, $certificate, $headers, $flags, $encoding, $cipher_algo);
@@ -99,8 +99,10 @@ function openssl_cms_read(string $input_filename, array &$certificates): void
  *
  * @param string $input_filename The name of the file to be signed.
  * @param string $output_filename The name of the file to deposit the results.
- * @param  $certificate The name of the file containing the signing certificate.
- * @param  $private_key The name of file containing the key associated with certificate.
+ * @param  $certificate The signing certificate.
+ * See Key/Certificate parameters for a list of valid values.
+ * @param  $private_key The key associated with certificate.
+ * See Key/Certificate parameters for a list of valid values.
  * @param  $headers An array of headers to be included in S/MIME output.
  * @param int $flags Flags to be passed to cms_sign.
  * @param int $encoding The encoding of the output file. One of OPENSSL_CMS_SMIME,
@@ -109,12 +111,12 @@ function openssl_cms_read(string $input_filename, array &$certificates): void
  * @throws OpensslException
  *
  */
-function openssl_cms_sign(string $input_filename, string $output_filename, $certificate, $private_key, $headers, int $flags = 0, int $encoding = OPENSSL_ENCODING_SMIME, $untrusted_certificates_filename = null): void
+function openssl_cms_sign(string $input_filename, string $output_filename,  $certificate,  $private_key,  $headers, int $flags = 0, int $encoding = OPENSSL_ENCODING_SMIME,  $untrusted_certificates_filename = null): void
 {
     error_clear_last();
     if ($untrusted_certificates_filename !== null) {
         $result = \openssl_cms_sign($input_filename, $output_filename, $certificate, $private_key, $headers, $flags, $encoding, $untrusted_certificates_filename);
-    } else {
+    }else {
         $result = \openssl_cms_sign($input_filename, $output_filename, $certificate, $private_key, $headers, $flags, $encoding);
     }
     if ($result === false) {
@@ -139,7 +141,7 @@ function openssl_cms_sign(string $input_filename, string $output_filename, $cert
  * @throws OpensslException
  *
  */
-function openssl_cms_verify(string $input_filename, int $flags = 0, $certificates = null, array $ca_info = [], $untrusted_certificates_filename = null, $content = null, $pk7 = null, $sigfile = null, int $encoding = OPENSSL_ENCODING_SMIME): void
+function openssl_cms_verify(string $input_filename, int $flags = 0,  $certificates = null, array $ca_info = [],  $untrusted_certificates_filename = null,  $content = null,  $pk7 = null,  $sigfile = null, int $encoding = OPENSSL_ENCODING_SMIME): void
 {
     error_clear_last();
     if ($encoding !== OPENSSL_ENCODING_SMIME) {
@@ -156,7 +158,7 @@ function openssl_cms_verify(string $input_filename, int $flags = 0, $certificate
         $result = \openssl_cms_verify($input_filename, $flags, $certificates, $ca_info);
     } elseif ($certificates !== null) {
         $result = \openssl_cms_verify($input_filename, $flags, $certificates);
-    } else {
+    }else {
         $result = \openssl_cms_verify($input_filename, $flags);
     }
     if ($result === false) {
@@ -180,7 +182,7 @@ function openssl_cms_verify(string $input_filename, int $flags = 0, $certificate
  * @throws OpensslException
  *
  */
-function openssl_csr_export_to_file($csr, string $output_filename, bool $no_text = true): void
+function openssl_csr_export_to_file( $csr, string $output_filename, bool $no_text = true): void
 {
     error_clear_last();
     $result = \openssl_csr_export_to_file($csr, $output_filename, $no_text);
@@ -206,7 +208,7 @@ function openssl_csr_export_to_file($csr, string $output_filename, bool $no_text
  * @throws OpensslException
  *
  */
-function openssl_csr_export($csr, ?string &$output, bool $no_text = true): void
+function openssl_csr_export( $csr, ?string &$output, bool $no_text = true): void
 {
     error_clear_last();
     $result = \openssl_csr_export($csr, $output, $no_text);
@@ -226,7 +228,7 @@ function openssl_csr_export($csr, ?string &$output, bool $no_text = true): void
  * @throws OpensslException
  *
  */
-function openssl_csr_get_public_key($csr, bool $short_names = true)
+function openssl_csr_get_public_key( $csr, bool $short_names = true)
 {
     error_clear_last();
     $result = \openssl_csr_get_public_key($csr, $short_names);
@@ -251,7 +253,7 @@ function openssl_csr_get_public_key($csr, bool $short_names = true)
  * @throws OpensslException
  *
  */
-function openssl_csr_get_subject($csr, bool $short_names = true): array
+function openssl_csr_get_subject( $csr, bool $short_names = true): array
 {
     error_clear_last();
     $result = \openssl_csr_get_subject($csr, $short_names);
@@ -372,14 +374,14 @@ function openssl_csr_get_subject($csr, bool $short_names = true): array
  * @throws OpensslException
  *
  */
-function openssl_csr_new(array $distinguished_names, &$private_key, array $options = null, array $extra_attributes = null)
+function openssl_csr_new(array $distinguished_names,  &$private_key, array $options = null, array $extra_attributes = null)
 {
     error_clear_last();
     if ($extra_attributes !== null) {
         $result = \openssl_csr_new($distinguished_names, $private_key, $options, $extra_attributes);
     } elseif ($options !== null) {
         $result = \openssl_csr_new($distinguished_names, $private_key, $options);
-    } else {
+    }else {
         $result = \openssl_csr_new($distinguished_names, $private_key);
     }
     if ($result === false) {
@@ -412,14 +414,14 @@ function openssl_csr_new(array $distinguished_names, &$private_key, array $optio
  * @throws OpensslException
  *
  */
-function openssl_csr_sign($csr, $ca_certificate, $private_key, int $days, array $options = null, int $serial = 0)
+function openssl_csr_sign( $csr,  $ca_certificate,  $private_key, int $days, array $options = null, int $serial = 0)
 {
     error_clear_last();
     if ($serial !== 0) {
         $result = \openssl_csr_sign($csr, $ca_certificate, $private_key, $days, $options, $serial);
     } elseif ($options !== null) {
         $result = \openssl_csr_sign($csr, $ca_certificate, $private_key, $days, $options);
-    } else {
+    }else {
         $result = \openssl_csr_sign($csr, $ca_certificate, $private_key, $days);
     }
     if ($result === false) {
@@ -468,7 +470,7 @@ function openssl_decrypt(string $data, string $cipher_algo, string $passphrase, 
  * @throws OpensslException
  *
  */
-function openssl_dh_compute_key(string $public_key, $private_key): string
+function openssl_dh_compute_key(string $public_key,  $private_key): string
 {
     error_clear_last();
     $result = \openssl_dh_compute_key($public_key, $private_key);
@@ -590,12 +592,12 @@ function openssl_get_curve_names(): array
  * @throws OpensslException
  *
  */
-function openssl_open(string $data, ?string &$output, string $encrypted_key, $private_key, string $cipher_algo, string $iv = null): void
+function openssl_open(string $data, ?string &$output, string $encrypted_key,  $private_key, string $cipher_algo, string $iv = null): void
 {
     error_clear_last();
     if ($iv !== null) {
         $result = \openssl_open($data, $output, $encrypted_key, $private_key, $cipher_algo, $iv);
-    } else {
+    }else {
         $result = \openssl_open($data, $output, $encrypted_key, $private_key, $cipher_algo);
     }
     if ($result === false) {
@@ -663,7 +665,7 @@ function openssl_pbkdf2(string $password, string $salt, int $key_length, int $it
  * @throws OpensslException
  *
  */
-function openssl_pkcs12_export_to_file($certificate, string $output_filename, $private_key, string $passphrase, array $options = []): void
+function openssl_pkcs12_export_to_file( $certificate, string $output_filename,  $private_key, string $passphrase, array $options = []): void
 {
     error_clear_last();
     $result = \openssl_pkcs12_export_to_file($certificate, $output_filename, $private_key, $passphrase, $options);
@@ -707,7 +709,7 @@ function openssl_pkcs12_export_to_file($certificate, string $output_filename, $p
  * @throws OpensslException
  *
  */
-function openssl_pkcs12_export($certificate, ?string &$output, $private_key, string $passphrase, array $options = []): void
+function openssl_pkcs12_export( $certificate, ?string &$output,  $private_key, string $passphrase, array $options = []): void
 {
     error_clear_last();
     $result = \openssl_pkcs12_export($certificate, $output, $private_key, $passphrase, $options);
@@ -752,12 +754,12 @@ function openssl_pkcs12_read(string $pkcs12, ?array &$certificates, string $pass
  * @throws OpensslException
  *
  */
-function openssl_pkcs7_decrypt(string $input_filename, string $output_filename, $certificate, $private_key = null): void
+function openssl_pkcs7_decrypt(string $input_filename, string $output_filename,  $certificate,  $private_key = null): void
 {
     error_clear_last();
     if ($private_key !== null) {
         $result = \openssl_pkcs7_decrypt($input_filename, $output_filename, $certificate, $private_key);
-    } else {
+    }else {
         $result = \openssl_pkcs7_decrypt($input_filename, $output_filename, $certificate);
     }
     if ($result === false) {
@@ -788,7 +790,7 @@ function openssl_pkcs7_decrypt(string $input_filename, string $output_filename, 
  * @throws OpensslException
  *
  */
-function openssl_pkcs7_encrypt(string $input_filename, string $output_filename, $certificate, array $headers, int $flags = 0, int $cipher_algo = OPENSSL_CIPHER_RC2_40): void
+function openssl_pkcs7_encrypt(string $input_filename, string $output_filename,  $certificate, array $headers, int $flags = 0, int $cipher_algo = OPENSSL_CIPHER_RC2_40): void
 {
     error_clear_last();
     $result = \openssl_pkcs7_encrypt($input_filename, $output_filename, $certificate, $headers, $flags, $cipher_algo);
@@ -801,15 +803,15 @@ function openssl_pkcs7_encrypt(string $input_filename, string $output_filename, 
 /**
  *
  *
- * @param string $input_filename
- * @param array|null $certificates
+ * @param string $data The string of data you wish to parse (p7b format).
+ * @param array|null $certificates The array of PEM certificates from the p7b input data.
  * @throws OpensslException
  *
  */
-function openssl_pkcs7_read(string $input_filename, ?array &$certificates): void
+function openssl_pkcs7_read(string $data, ?array &$certificates): void
 {
     error_clear_last();
-    $result = \openssl_pkcs7_read($input_filename, $certificates);
+    $result = \openssl_pkcs7_read($data, $certificates);
     if ($result === false) {
         throw OpensslException::createFromPhpError();
     }
@@ -840,12 +842,12 @@ function openssl_pkcs7_read(string $input_filename, ?array &$certificates): void
  * @throws OpensslException
  *
  */
-function openssl_pkcs7_sign(string $input_filename, string $output_filename, $certificate, $private_key, array $headers, int $flags = PKCS7_DETACHED, string $untrusted_certificates_filename = null): void
+function openssl_pkcs7_sign(string $input_filename, string $output_filename,  $certificate,  $private_key, array $headers, int $flags = PKCS7_DETACHED, string $untrusted_certificates_filename = null): void
 {
     error_clear_last();
     if ($untrusted_certificates_filename !== null) {
         $result = \openssl_pkcs7_sign($input_filename, $output_filename, $certificate, $private_key, $headers, $flags, $untrusted_certificates_filename);
-    } else {
+    }else {
         $result = \openssl_pkcs7_sign($input_filename, $output_filename, $certificate, $private_key, $headers, $flags);
     }
     if ($result === false) {
@@ -867,7 +869,7 @@ function openssl_pkcs7_sign(string $input_filename, string $output_filename, $ce
  * @throws OpensslException
  *
  */
-function openssl_pkey_derive($public_key, $private_key, int $key_length = 0): string
+function openssl_pkey_derive( $public_key,  $private_key, int $key_length = 0): string
 {
     error_clear_last();
     $result = \openssl_pkey_derive($public_key, $private_key, $key_length);
@@ -894,14 +896,14 @@ function openssl_pkey_derive($public_key, $private_key, int $key_length = 0): st
  * @throws OpensslException
  *
  */
-function openssl_pkey_export_to_file($key, string $output_filename, ?string $passphrase = null, array $options = null): void
+function openssl_pkey_export_to_file( $key, string $output_filename, ?string $passphrase = null, array $options = null): void
 {
     error_clear_last();
     if ($options !== null) {
         $result = \openssl_pkey_export_to_file($key, $output_filename, $passphrase, $options);
     } elseif ($passphrase !== null) {
         $result = \openssl_pkey_export_to_file($key, $output_filename, $passphrase);
-    } else {
+    }else {
         $result = \openssl_pkey_export_to_file($key, $output_filename);
     }
     if ($result === false) {
@@ -925,14 +927,14 @@ function openssl_pkey_export_to_file($key, string $output_filename, ?string $pas
  * @throws OpensslException
  *
  */
-function openssl_pkey_export($key, ?string &$output, ?string $passphrase = null, array $options = null): void
+function openssl_pkey_export( $key, ?string &$output, ?string $passphrase = null, array $options = null): void
 {
     error_clear_last();
     if ($options !== null) {
         $result = \openssl_pkey_export($key, $output, $passphrase, $options);
     } elseif ($passphrase !== null) {
         $result = \openssl_pkey_export($key, $output, $passphrase);
-    } else {
+    }else {
         $result = \openssl_pkey_export($key, $output);
     }
     if ($result === false) {
@@ -965,7 +967,7 @@ function openssl_pkey_get_private(string $private_key, string $passphrase = null
     error_clear_last();
     if ($passphrase !== null) {
         $result = \openssl_pkey_get_private($private_key, $passphrase);
-    } else {
+    }else {
         $result = \openssl_pkey_get_private($private_key);
     }
     if ($result === false) {
@@ -994,7 +996,7 @@ function openssl_pkey_get_private(string $private_key, string $passphrase = null
  * @throws OpensslException
  *
  */
-function openssl_pkey_get_public($public_key)
+function openssl_pkey_get_public( $public_key)
 {
     error_clear_last();
     $result = \openssl_pkey_get_public($public_key);
@@ -1023,7 +1025,7 @@ function openssl_pkey_new(array $options = null)
     error_clear_last();
     if ($options !== null) {
         $result = \openssl_pkey_new($options);
-    } else {
+    }else {
         $result = \openssl_pkey_new();
     }
     if ($result === false) {
@@ -1053,7 +1055,7 @@ function openssl_pkey_new(array $options = null)
  * @throws OpensslException
  *
  */
-function openssl_private_decrypt(string $data, ?string &$decrypted_data, $private_key, int $padding = OPENSSL_PKCS1_PADDING): void
+function openssl_private_decrypt(string $data, ?string &$decrypted_data,  $private_key, int $padding = OPENSSL_PKCS1_PADDING): void
 {
     error_clear_last();
     $result = \openssl_private_decrypt($data, $decrypted_data, $private_key, $padding);
@@ -1081,7 +1083,7 @@ function openssl_private_decrypt(string $data, ?string &$decrypted_data, $privat
  * @throws OpensslException
  *
  */
-function openssl_private_encrypt(string $data, ?string &$encrypted_data, $private_key, int $padding = OPENSSL_PKCS1_PADDING): void
+function openssl_private_encrypt(string $data, ?string &$encrypted_data,  $private_key, int $padding = OPENSSL_PKCS1_PADDING): void
 {
     error_clear_last();
     $result = \openssl_private_encrypt($data, $encrypted_data, $private_key, $padding);
@@ -1110,7 +1112,7 @@ function openssl_private_encrypt(string $data, ?string &$encrypted_data, $privat
  * @throws OpensslException
  *
  */
-function openssl_public_decrypt(string $data, ?string &$decrypted_data, $public_key, int $padding = OPENSSL_PKCS1_PADDING): void
+function openssl_public_decrypt(string $data, ?string &$decrypted_data,  $public_key, int $padding = OPENSSL_PKCS1_PADDING): void
 {
     error_clear_last();
     $result = \openssl_public_decrypt($data, $decrypted_data, $public_key, $padding);
@@ -1141,7 +1143,7 @@ function openssl_public_decrypt(string $data, ?string &$decrypted_data, $public_
  * @throws OpensslException
  *
  */
-function openssl_public_encrypt(string $data, ?string &$encrypted_data, $public_key, int $padding = OPENSSL_PKCS1_PADDING): void
+function openssl_public_encrypt(string $data, ?string &$encrypted_data,  $public_key, int $padding = OPENSSL_PKCS1_PADDING): void
 {
     error_clear_last();
     $result = \openssl_public_encrypt($data, $encrypted_data, $public_key, $padding);
@@ -1239,7 +1241,7 @@ function openssl_seal(string $data, ?string &$sealed_data, ?array &$encrypted_ke
  * @throws OpensslException
  *
  */
-function openssl_sign(string $data, ?string &$signature, $private_key, $algorithm = OPENSSL_ALGO_SHA1): void
+function openssl_sign(string $data, ?string &$signature,  $private_key,  $algorithm = OPENSSL_ALGO_SHA1): void
 {
     error_clear_last();
     $result = \openssl_sign($data, $signature, $private_key, $algorithm);
@@ -1301,7 +1303,7 @@ function openssl_spki_export(string $spki): ?string
  * @throws OpensslException
  *
  */
-function openssl_spki_new($private_key, string $challenge, int $digest_algo = OPENSSL_ALGO_MD5): ?string
+function openssl_spki_new( $private_key, string $challenge, int $digest_algo = OPENSSL_ALGO_MD5): ?string
 {
     error_clear_last();
     $result = \openssl_spki_new($private_key, $challenge, $digest_algo);
@@ -1350,7 +1352,7 @@ function openssl_spki_verify(string $spki): void
  * @throws OpensslException
  *
  */
-function openssl_verify(string $data, string $signature, $public_key, $algorithm = OPENSSL_ALGO_SHA1)
+function openssl_verify(string $data, string $signature,  $public_key,  $algorithm = OPENSSL_ALGO_SHA1)
 {
     error_clear_last();
     $result = \openssl_verify($data, $signature, $public_key, $algorithm);
@@ -1376,7 +1378,7 @@ function openssl_verify(string $data, string $signature, $public_key, $algorithm
  * @throws OpensslException
  *
  */
-function openssl_x509_export_to_file($certificate, string $output_filename, bool $no_text = true): void
+function openssl_x509_export_to_file( $certificate, string $output_filename, bool $no_text = true): void
 {
     error_clear_last();
     $result = \openssl_x509_export_to_file($certificate, $output_filename, $no_text);
@@ -1401,7 +1403,7 @@ function openssl_x509_export_to_file($certificate, string $output_filename, bool
  * @throws OpensslException
  *
  */
-function openssl_x509_export($certificate, ?string &$output, bool $no_text = true): void
+function openssl_x509_export( $certificate, ?string &$output, bool $no_text = true): void
 {
     error_clear_last();
     $result = \openssl_x509_export($certificate, $output, $no_text);
@@ -1424,7 +1426,7 @@ function openssl_x509_export($certificate, ?string &$output, bool $no_text = tru
  * @throws OpensslException
  *
  */
-function openssl_x509_fingerprint($certificate, string $digest_algo = "sha1", bool $binary = false): string
+function openssl_x509_fingerprint( $certificate, string $digest_algo = "sha1", bool $binary = false): string
 {
     error_clear_last();
     $result = \openssl_x509_fingerprint($certificate, $digest_algo, $binary);
@@ -1445,7 +1447,7 @@ function openssl_x509_fingerprint($certificate, string $digest_algo = "sha1", bo
  * @throws OpensslException
  *
  */
-function openssl_x509_read($certificate)
+function openssl_x509_read( $certificate)
 {
     error_clear_last();
     $result = \openssl_x509_read($certificate);
@@ -1454,3 +1456,4 @@ function openssl_x509_read($certificate)
     }
     return $result;
 }
+
